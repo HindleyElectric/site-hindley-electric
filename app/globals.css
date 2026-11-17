@@ -10,6 +10,11 @@ html {
   scroll-behavior: smooth;
 }
 
+/* The logo intro plays once per visit; set before first paint in app/layout.tsx. */
+html[data-intro-seen] [data-intro-overlay] {
+  display: none;
+}
+
 @media (prefers-reduced-motion: reduce) {
   html {
     scroll-behavior: auto;
