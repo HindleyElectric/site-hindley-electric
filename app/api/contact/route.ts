@@ -47,6 +47,10 @@ export async function POST(request: Request) {
 
   const webhookUrl = process.env.CRM_WEBHOOK_URL;
 
+  // A lead counts as received only when the CRM webhook accepted it. Server logs
+  // are not a delivery channel (they expire), so when there is no webhook or it
+  // fails, the visitor is told so and handed an email draft of the same request
+  // plus the phone number, instead of a "Got it" that nobody will ever read.
   if (webhookUrl) {
     try {
       const res = await fetch(webhookUrl, {
@@ -58,20 +62,23 @@ export async function POST(request: Request) {
           ...body,
         }),
       });
-
-      if (!res.ok) {
-        console.error("CRM webhook responded with", res.status);
-        // Fall through — the lead is still logged below, and the visitor still
-        // gets a success confirmation. The lead is not lost.
+      if (res.ok) {
+        return NextResponse.json({ ok: true });
       }
+      console.error("CRM webhook responded with", res.status);
     } catch (err) {
       console.error("Failed to forward lead to CRM_WEBHOOK_URL", err);
     }
   } else {
-    // No CRM configured yet — log server-side so the lead isn't lost while the
-    // client sets up their Go High Level webhook (see status.md).
-    console.log("New Hindley Electric lead (CRM_WEBHOOK_URL not set):", body);
+    console.warn("Contact form used but CRM_WEBHOOK_URL is not set; visitor sent to email fallback.");
   }
 
-  return NextResponse.json({ ok: true });
+  return NextResponse.json(
+    {
+      ok: false,
+      fallback: "mailto",
+      error: "We couldn't send this online right now. Your details are still in the form below.",
+    },
+    { status: 503 }
+  );
 }

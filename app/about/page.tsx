@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Reveal, RevealStagger } from "@/components/ui/Reveal";
 import { SectionLabel } from "@/components/ui/SectionLabel";
 import { Button } from "@/components/ui/Button";
+import VideoSlots from "@/components/video/VideoSlots";
 
 export const metadata: Metadata = {
   title: "About Nick Hindley",
@@ -73,7 +74,7 @@ export default function AboutPage() {
 
         <div className="mt-28">
           <Reveal>
-            <SectionLabel>The Path Here</SectionLabel>
+            <SectionLabel as="h2">The Path Here</SectionLabel>
           </Reveal>
           <RevealStagger className="mt-8 space-y-0 border-t border-bone/10">
             {timeline.map((step) => (
@@ -100,7 +101,7 @@ export default function AboutPage() {
 
         <div className="mt-28">
           <Reveal>
-            <SectionLabel>How Nick Works</SectionLabel>
+            <SectionLabel as="h2">How Nick Works</SectionLabel>
           </Reveal>
           <RevealStagger className="mt-8 grid gap-4 md:grid-cols-3">
             {values.map((value) => (
@@ -117,6 +118,9 @@ export default function AboutPage() {
             ))}
           </RevealStagger>
         </div>
+
+        {/* Video slots (walkthrough / flyover): hidden until a file is committed. */}
+        <VideoSlots slug="hindley-electric" subjectName="Hindley Electric" fallbackPoster="/brand/logo.png" />
       </div>
     </div>
   );

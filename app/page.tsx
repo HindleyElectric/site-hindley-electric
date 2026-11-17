@@ -7,7 +7,9 @@ import MeetNickTeaser from "@/components/home/MeetNickTeaser";
 import CtaBand from "@/components/home/CtaBand";
 
 export const metadata: Metadata = {
-  title: "Licensed Electrician",
+  // `absolute`: the layout's title template does not apply to its own segment's page,
+  // so without it the home tab read only "Licensed Electrician".
+  title: { absolute: "Hindley Electric | Licensed Electrician" },
   description:
     "Hindley Electric — licensed residential, commercial, and industrial electrical work. Panels, EV chargers, lighting, outlets, ceiling fans, solar repair, low-voltage & data, new construction, and remodel wiring.",
 };

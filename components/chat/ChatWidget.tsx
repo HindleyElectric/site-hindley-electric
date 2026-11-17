@@ -15,7 +15,7 @@ const SUGGESTIONS = [
 ];
 
 const GREETING =
-  `Hey — I'm the ${siteConfig.businessName} site assistant. Ask me about our services, ` +
+  `Hey — I'm ${siteConfig.businessName}'s AI assistant (not a person). Ask me about our services, ` +
   `hours, service area, or anything else, and I'll do my best to help.`;
 
 export default function ChatWidget() {
