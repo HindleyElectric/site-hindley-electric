@@ -1,9 +1,31 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import { INTRO_SEEN_KEY } from "@/lib/intro";
 
 const FADE_MS = 600;
 const FALLBACK_TIMEOUT_MS = 13000; // safety net if the video never fires "ended" — video is ~10s
+
+// The logo intro plays once per visit (browser tab session), not on every page.
+// app/layout.tsx reads the same key before first paint and sets
+// <html data-intro-seen>, which hides the overlay in CSS so later pages never
+// flash it. If storage is blocked (some private modes), the intro plays as before.
+
+function introAlreadySeen(): boolean {
+  try {
+    return window.sessionStorage.getItem(INTRO_SEEN_KEY) === "1";
+  } catch {
+    return false;
+  }
+}
+
+function markIntroSeen() {
+  try {
+    window.sessionStorage.setItem(INTRO_SEEN_KEY, "1");
+  } catch {
+    // storage unavailable: nothing to remember, the intro just plays next time
+  }
+}
 
 export default function LoadingScreen() {
   const [mounted, setMounted] = useState(false);
@@ -22,11 +44,14 @@ export default function LoadingScreen() {
   useEffect(() => {
     const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
-    if (reducedMotion) {
+    if (reducedMotion || introAlreadySeen()) {
       setDone(true);
       return;
     }
 
+    // Remember it as soon as it starts, so a reload or a second page during
+    // the intro does not start it over.
+    markIntroSeen();
     setMounted(true);
 
     const fallback = window.setTimeout(finish, FALLBACK_TIMEOUT_MS);
@@ -58,6 +83,7 @@ export default function LoadingScreen() {
 
   return (
     <div
+      data-intro-overlay
       aria-hidden={!mounted}
       className={`fixed inset-0 z-[999] flex items-center justify-center bg-ground transition-opacity ease-out ${
         fading ? "opacity-0" : "opacity-100"

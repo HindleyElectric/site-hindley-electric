@@ -4,6 +4,7 @@ import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
 import JsonLd from "@/components/seo/JsonLd";
 import LoadingScreen from "@/components/loading/LoadingScreen";
+import { INTRO_SEEN_SCRIPT } from "@/lib/intro";
 import ChatWidget from "@/components/chat/ChatWidget";
 import { siteConfig } from "@/lib/site-config";
 import "./globals.css";
@@ -46,7 +47,14 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en" className={`${oswald.variable} ${inter.variable}`}>
+    // suppressHydrationWarning: the script below may add data-intro-seen to <html>
+    // before React hydrates.
+    <html lang="en" className={`${oswald.variable} ${inter.variable}`} suppressHydrationWarning>
+      <head>
+        {/* Runs before first paint: once the logo intro has played this visit, hide
+            its overlay so later pages show straight away (components/loading/LoadingScreen.tsx). */}
+        <script dangerouslySetInnerHTML={{ __html: INTRO_SEEN_SCRIPT }} />
+      </head>
       <body className="min-h-screen bg-ground font-sans text-bone antialiased">
         <JsonLd />
         <LoadingScreen />
