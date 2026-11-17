@@ -2,9 +2,34 @@
 
 import { useEffect, useState, type FormEvent } from "react";
 import { useSearchParams } from "next/navigation";
-import { jobTypes } from "@/lib/site-config";
+import { jobTypes, siteConfig, telHref } from "@/lib/site-config";
 
-type Status = "idle" | "submitting" | "success" | "error";
+type Status = "idle" | "submitting" | "success" | "error" | "fallback";
+
+type Payload = {
+  firstName: string;
+  lastName: string;
+  phone: string;
+  email: string;
+  jobType: string;
+  description: string;
+};
+
+// An email draft of the same request, so a visitor is never left with a form
+// that silently went nowhere.
+function mailtoFor(p: Payload): string | null {
+  if (!siteConfig.email) return null;
+  const subject = `Job request: ${p.jobType || "electrical work"}`;
+  const body = [
+    `Name: ${p.firstName} ${p.lastName}`,
+    `Phone: ${p.phone}`,
+    `Email: ${p.email}`,
+    `Type of job: ${p.jobType}`,
+    "",
+    p.description,
+  ].join("\n");
+  return `mailto:${siteConfig.email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+}
 
 const inputClasses =
   "focus-ring w-full border border-bone/20 bg-ground px-4 py-3 text-bone placeholder:text-muted/60 transition-colors focus:border-red";
@@ -14,6 +39,7 @@ export default function ContactForm() {
   const [status, setStatus] = useState<Status>("idle");
   const [errorMsg, setErrorMsg] = useState("");
   const [jobType, setJobType] = useState("");
+  const [fallbackHref, setFallbackHref] = useState<string | null>(null);
 
   useEffect(() => {
     const fromQuery = searchParams.get("job");
@@ -44,7 +70,14 @@ export default function ContactForm() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payload),
       });
-      const json = await res.json();
+      const json = await res.json().catch(() => ({}));
+
+      if (json.fallback === "mailto") {
+        setFallbackHref(mailtoFor(payload));
+        setStatus("fallback");
+        setErrorMsg(json.error || "We couldn't send this online right now.");
+        return;
+      }
 
       if (!res.ok || !json.ok) {
         throw new Error(json.error || "Something went wrong. Please try again.");
@@ -167,6 +200,32 @@ export default function ContactForm() {
           className={inputClasses}
         />
       </div>
+
+      {status === "fallback" && (
+        <div role="alert" className="space-y-3 border border-red/40 bg-surface p-5 text-sm text-bone/80">
+          <p>{errorMsg}</p>
+          <p>
+            {fallbackHref && (
+              <>
+                <a href={fallbackHref} className="text-red underline hover:text-red-glow">
+                  Send it by email instead
+                </a>{" "}
+                (opens your email app with everything you typed)
+              </>
+            )}
+            {fallbackHref && telHref() && " or "}
+            {telHref() && (
+              <>
+                call{" "}
+                <a href={telHref() as string} className="text-red underline hover:text-red-glow">
+                  {siteConfig.phoneDisplay}
+                </a>
+              </>
+            )}
+            .
+          </p>
+        </div>
+      )}
 
       {status === "error" && (
         <p role="alert" className="text-sm text-red-400">

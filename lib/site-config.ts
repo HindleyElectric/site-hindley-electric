@@ -18,7 +18,8 @@ export const siteConfig = {
   licenseLine: "Licensed, bonded & insured — license # 1161865",
   yearsExperience: 20,
   yearsAsPartner: 5,
-  siteUrl: "https://site-hindley-electric.vercel.app",
+  // The domain the business owns; hindleyelectric.com redirects here (verified 2026-11-17).
+  siteUrl: "https://www.hindleyelectric.com",
 } as const;
 
 export const jobTypes = [

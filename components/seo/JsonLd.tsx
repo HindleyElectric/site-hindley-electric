@@ -27,7 +27,6 @@ export default function JsonLd() {
           postalCode: siteConfig.zip ?? undefined,
         }
       : undefined,
-    priceRange: "$$",
   };
 
   return (
