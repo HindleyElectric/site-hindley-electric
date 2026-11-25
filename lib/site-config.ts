@@ -38,6 +38,21 @@ export const jobTypes = [
 
 export type JobType = (typeof jobTypes)[number];
 
+// Google Ads conversion "Website quote request" (shared by the owner 2026-11-25).
+// Fired only after the contact form is actually delivered to the CRM.
+export const GOOGLE_ADS_LEAD_CONVERSION = "AW-18594327921/QaSUCOS9zb8dEPHau6JF";
+
+export function trackLeadConversion(): void {
+  if (typeof window === "undefined") return;
+  const gtag = (window as unknown as { gtag?: (...args: unknown[]) => void }).gtag;
+  if (typeof gtag !== "function") return;
+  const id =
+    typeof crypto !== "undefined" && "randomUUID" in crypto
+      ? crypto.randomUUID()
+      : `${Date.now()}-${Math.random().toString(36).slice(2)}`;
+  gtag("event", "conversion", { send_to: GOOGLE_ADS_LEAD_CONVERSION, transaction_id: id });
+}
+
 export function telHref(): string | null {
   return siteConfig.phone ? `tel:${siteConfig.phone.replace(/[^\d+]/g, "")}` : null;
 }

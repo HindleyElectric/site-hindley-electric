@@ -2,7 +2,7 @@
 
 import { useEffect, useState, type FormEvent } from "react";
 import { useSearchParams } from "next/navigation";
-import { jobTypes, siteConfig, telHref } from "@/lib/site-config";
+import { jobTypes, siteConfig, telHref, trackLeadConversion } from "@/lib/site-config";
 
 type Status = "idle" | "submitting" | "success" | "error" | "fallback";
 
@@ -83,6 +83,7 @@ export default function ContactForm() {
         throw new Error(json.error || "Something went wrong. Please try again.");
       }
 
+      trackLeadConversion();
       setStatus("success");
       form.reset();
       setJobType("");
