@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Script from "next/script";
 import { Inter, Oswald } from "next/font/google";
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
@@ -7,6 +8,9 @@ import LoadingScreen from "@/components/loading/LoadingScreen";
 import ChatWidget from "@/components/chat/ChatWidget";
 import { siteConfig } from "@/lib/site-config";
 import "./globals.css";
+
+// Google Ads tag (gtag.js) — conversion ID from the owner's Google Ads account.
+const GOOGLE_ADS_ID = "AW-18594327921";
 
 const oswald = Oswald({
   subsets: ["latin"],
@@ -54,6 +58,16 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <main>{children}</main>
         <Footer />
         <ChatWidget />
+        <Script
+          src={`https://www.googletagmanager.com/gtag/js?id=${GOOGLE_ADS_ID}`}
+          strategy="afterInteractive"
+        />
+        <Script id="google-ads-gtag" strategy="afterInteractive">
+          {`window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+gtag('js', new Date());
+gtag('config', '${GOOGLE_ADS_ID}');`}
+        </Script>
       </body>
     </html>
   );

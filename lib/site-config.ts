@@ -6,8 +6,8 @@ export const siteConfig = {
   businessName: "Hindley Electric",
   ownerName: "Nick Hindley",
   tagline: "Licensed. Direct. No Runaround.",
-  phone: "+1-719-357-2441" as string | null,
-  phoneDisplay: "(719) 357-2441" as string | null,
+  phone: "+1-805-712-0234" as string | null,
+  phoneDisplay: "+1-805-712-0234" as string | null,
   email: "nick@hindleyelectric.com" as string | null,
   address: null as string | null, // street address, if a physical office exists
   city: null as string | null,
