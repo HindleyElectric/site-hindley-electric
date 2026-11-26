@@ -38,9 +38,9 @@ export const jobTypes = [
 
 export type JobType = (typeof jobTypes)[number];
 
-// Google Ads conversion "Website quote request" (shared by the owner 2026-11-25).
+// Google Ads conversion "website quote request (1)" — recreated by the owner 2026-11-26.
 // Fired only after the contact form is actually delivered to the CRM.
-export const GOOGLE_ADS_LEAD_CONVERSION = "AW-18594327921/QaSUCOS9zb8dEPHau6JF";
+export const GOOGLE_ADS_LEAD_CONVERSION = "AW-18594327921/KhabCL212r8dEPHau6JF";
 
 async function sha256Hex(value: string): Promise<string | null> {
   if (!value || typeof crypto === "undefined" || !crypto.subtle) return null;
