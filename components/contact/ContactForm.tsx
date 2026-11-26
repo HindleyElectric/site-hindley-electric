@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState, type FormEvent } from "react";
+import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { jobTypes, siteConfig, telHref, trackLeadConversion } from "@/lib/site-config";
 
@@ -83,7 +84,7 @@ export default function ContactForm() {
         throw new Error(json.error || "Something went wrong. Please try again.");
       }
 
-      trackLeadConversion();
+      await trackLeadConversion({ email: payload.email, phone: payload.phone });
       setStatus("success");
       form.reset();
       setJobType("");
@@ -241,6 +242,13 @@ export default function ContactForm() {
       >
         {status === "submitting" ? "Sending…" : "Send Job Request"}
       </button>
+      <p className="text-xs text-muted">
+        By sending this request you agree to be contacted about your job. See our{" "}
+        <Link href="/privacy" className="underline hover:text-bone">
+          Privacy Policy
+        </Link>
+        .
+      </p>
     </form>
   );
 }

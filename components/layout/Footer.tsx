@@ -102,7 +102,10 @@ export default function Footer() {
 
       <div className="border-t border-bone/10 px-6 py-6">
         <p className="mx-auto max-w-7xl text-xs text-muted/70">
-          © {new Date().getFullYear()} {siteConfig.businessName}. All rights reserved.
+          © {new Date().getFullYear()} {siteConfig.businessName}. All rights reserved. ·{" "}
+          <Link href="/privacy" className="focus-ring hover:text-bone">
+            Privacy Policy
+          </Link>
         </p>
       </div>
     </footer>
