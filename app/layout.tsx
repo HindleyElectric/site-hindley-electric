@@ -11,6 +11,8 @@ import "./globals.css";
 
 // Google Ads tag (gtag.js) — conversion ID from the owner's Google Ads account.
 const GOOGLE_ADS_ID = "AW-18594327921";
+// Google Tag Manager container (owner uses GTM, 2026-11-26).
+const GTM_ID = "GTM-T2BQG7TN";
 
 const oswald = Oswald({
   subsets: ["latin"],
@@ -52,12 +54,27 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="en" className={`${oswald.variable} ${inter.variable}`}>
       <body className="min-h-screen bg-ground font-sans text-bone antialiased">
+        <noscript>
+          <iframe
+            src={`https://www.googletagmanager.com/ns.html?id=${GTM_ID}`}
+            height="0"
+            width="0"
+            style={{ display: "none", visibility: "hidden" }}
+          />
+        </noscript>
         <JsonLd />
         <LoadingScreen />
         <Navbar />
         <main>{children}</main>
         <Footer />
         <ChatWidget />
+        <Script id="google-tag-manager" strategy="afterInteractive">
+          {`(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+})(window,document,'script','dataLayer','${GTM_ID}');`}
+        </Script>
         <Script
           src={`https://www.googletagmanager.com/gtag/js?id=${GOOGLE_ADS_ID}`}
           strategy="afterInteractive"

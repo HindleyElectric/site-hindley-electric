@@ -50,6 +50,11 @@ export function trackLeadConversion(): void {
     typeof crypto !== "undefined" && "randomUUID" in crypto
       ? crypto.randomUUID()
       : `${Date.now()}-${Math.random().toString(36).slice(2)}`;
+  // GTM: a dataLayer event Tag Manager can trigger on (for GA4 etc.). The Google Ads
+  // conversion itself is sent below — do not add a second Ads conversion tag for it in GTM.
+  const w = window as unknown as { dataLayer?: unknown[] };
+  w.dataLayer = w.dataLayer || [];
+  w.dataLayer.push({ event: "quote_request_submitted", transaction_id: id });
   gtag("event", "conversion", { send_to: GOOGLE_ADS_LEAD_CONVERSION, transaction_id: id });
 }
 
